@@ -1,4 +1,4 @@
-const MODEL = "claude-sonnet-4-20250514";
+const MODEL = "claude-sonnet-4-6";
 
 export default async function handler(req: any, res: any) {
   if (req.method !== "POST") {
@@ -9,16 +9,16 @@ export default async function handler(req: any, res: any) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({
-      error: "ANTHROPIC_API_KEY is not set on the server.",
-    });
+    return res
+      .status(500)
+      .json({ error: "ANTHROPIC_API_KEY is not set on the server." });
   }
 
   const { system, userContent } = req.body || {};
 
   if (typeof system !== "string" || typeof userContent !== "string") {
     return res.status(400).json({
-      error: "Expected JSON body with string fields: system and userContent.",
+      error: "Expected JSON body with string fields: system and userContent."
     });
   }
 
@@ -28,7 +28,7 @@ export default async function handler(req: any, res: any) {
       headers: {
         "Content-Type": "application/json",
         "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
+        "anthropic-version": "2023-06-01"
       },
       body: JSON.stringify({
         model: MODEL,
@@ -37,10 +37,10 @@ export default async function handler(req: any, res: any) {
         messages: [
           {
             role: "user",
-            content: userContent,
-          },
-        ],
-      }),
+            content: userContent
+          }
+        ]
+      })
     });
 
     const data = await anthropicRes.json();
@@ -53,7 +53,7 @@ export default async function handler(req: any, res: any) {
 
       return res.status(anthropicRes.status).json({
         error: message,
-        details: data,
+        details: data
       });
     }
 
@@ -67,7 +67,7 @@ export default async function handler(req: any, res: any) {
     if (!text) {
       return res.status(502).json({
         error: "Anthropic returned no text content.",
-        details: data,
+        details: data
       });
     }
 
@@ -76,12 +76,12 @@ export default async function handler(req: any, res: any) {
     } catch {
       return res.status(502).json({
         error: "Anthropic returned invalid JSON.",
-        raw: text,
+        raw: text
       });
     }
   } catch (error: any) {
     return res.status(500).json({
-      error: error?.message || "Unexpected server error.",
+      error: error?.message || "Unexpected server error."
     });
   }
 }
