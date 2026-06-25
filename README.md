@@ -18,3 +18,4 @@
 ## Security change made
 The frontend no longer sends requests directly to Anthropic.
 It now calls `/api/claude`, and the Anthropic key stays on the server in Vercel environment variables.
+Initial Vercel deployment trigger
